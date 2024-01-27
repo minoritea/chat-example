@@ -3,6 +3,19 @@
   <head>
     <title>Chat Example</title>
     <script type="module" src="https://cdn.skypack.dev/@hotwired/turbo" crossorigin></script>
+    <script type="module">
+      import { Controller, Application } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+
+      class SubmitController extends Controller {
+        static targets = [ "text" ]
+        afterSubmit() {
+          this.textTarget.value = ""
+        }
+      }
+
+      const application = Application.start()
+      application.register("submit", SubmitController)
+    </script>
   </head>
   <body>
     <div id="chat">
@@ -15,8 +28,11 @@
           {{ end }}
         </div>
       </turbo-frame>
-      <form action="/messages" method="post" data-turbo-frame="message-frame">
-        <input type="text" name="message" id="message" />
+      <form action="/messages" method="post"
+        data-turbo-frame="message-frame"
+        data-controller="submit"
+        data-action="turbo:submit-end@document->submit#afterSubmit">
+        <input type="text" name="message" data-submit-target="text"/>
         <input type="submit" value="Send" />
       </form>
     </div>
