@@ -7,9 +7,14 @@
       import { Controller, Application } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
       class SubmitController extends Controller {
-        static targets = [ "text" ]
+        static targets = [ "text", "lastMessageId" ]
         afterSubmit() {
           this.textTarget.value = ""
+        }
+
+        beforeSubmit() {
+          const messages = Array.from(document.querySelectorAll(".message"))
+          this.lastMessageIdTarget.value = messages.length > 0 ? messages.slice(-1)[0].id : ""
         }
       }
 
@@ -19,19 +24,21 @@
   </head>
   <body>
     <div id="chat">
-      <turbo-frame id="message-frame">
-        <div id="messages">
-          {{ range .Messages }}
-            <div class="message">
-              <span class="text">{{ . }}</span>
-            </div>
-          {{ end }}
-        </div>
-      </turbo-frame>
+      <div id="messages">
+        {{ range .Messages }}
+          <div id="{{ .ID }}" class="message">
+            <span class="text">{{ .Body }}</span>
+          </div>
+        {{ end }}
+      </div>
       <form action="/messages" method="post"
         data-turbo-frame="message-frame"
         data-controller="submit"
-        data-action="turbo:submit-end@document->submit#afterSubmit">
+        data-action="
+          turbo:submit-start@document->submit#beforeSubmit
+          turbo:submit-end@document->submit#afterSubmit
+        ">
+        <input type="hidden" name="lastMessageId" data-submit-target="lastMessageId"/>
         <input type="text" name="message" data-submit-target="text"/>
         <input type="submit" value="Send" />
       </form>

@@ -1,0 +1,9 @@
+{{ range .Messages }}
+<turbo-stream action="append" target="messages">
+	<template>
+		<div id="{{ .ID }}" class="message">
+			<span class="text">{{ .Body }}</span>
+		</div>
+	</template>
+</turbo-stream>
+{{ end }}
