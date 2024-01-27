@@ -6,14 +6,16 @@
   </head>
   <body>
     <div id="chat">
-      <div id="messages">
-        {{ range .Messages }}
-          <div class="message">
-            <span class="text">{{ . }}</span>
-          </div>
-        {{ end }}
-      </div>
-      <form action="/messages" method="post">
+      <turbo-frame id="message-frame">
+        <div id="messages">
+          {{ range .Messages }}
+            <div class="message">
+              <span class="text">{{ . }}</span>
+            </div>
+          {{ end }}
+        </div>
+      </turbo-frame>
+      <form action="/messages" method="post" data-turbo-frame="message-frame">
         <input type="text" name="message" id="message" />
         <input type="submit" value="Send" />
       </form>
