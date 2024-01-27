@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat Example</title>
+  </head>
+  <body>
+    <div id="chat">
+      <div id="messages">
+        {{ range .Messages }}
+          <div class="message">
+            <span class="text">{{ . }}</span>
+          </div>
+        {{ end }}
+      </div>
+      <form action="/messages" method="post">
+        <input type="text" name="message" id="message" />
+        <input type="submit" value="Send" />
+      </form>
+    </div>
+  </body>
+</html>
